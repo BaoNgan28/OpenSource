@@ -1,0 +1,74 @@
+CREATE DATABASE IF NOT EXISTS my_store;
+USE my_store;
+-- Tạo bảng danh mục sản phẩm
+CREATE TABLE IF NOT EXISTS category (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+description TEXT
+);
+-- Tạo bảng sản phẩm
+CREATE TABLE IF NOT EXISTS product (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+description TEXT,
+price DECIMAL(10,2) NOT NULL,
+image VARCHAR(255) DEFAULT NULL,
+category_id INT,
+FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
+);
+-- Chèn dữ liệu vào bảng category
+INSERT INTO category (name, description) VALUES
+('Điện thoại', 'Danh mục các loại điện thoại'),
+('Laptop', 'Danh mục các loại laptop'),
+('Máy tính bảng', 'Danh mục các loại máy tính bảng'),
+('Phụ kiện', 'Danh mục phụ kiện điện tử'),
+('Thiết bị âm thanh', 'Danh mục loa, tai nghe, micro');
+
+INSERT INTO product (name, description, price, image, category_id) VALUES
+-- Điện thoại (category_id = 1)
+('iPhone 15', 'Điện thoại Apple iPhone 15 128GB', 22990000, 'uploads/2.jpg', 1),
+('Samsung Galaxy S23', 'Điện thoại Samsung flagship', 19990000, 'uploads/1.jpg', 1),
+('Xiaomi 13', 'Điện thoại Xiaomi hiệu năng cao', 15990000, 'uploads/2.jpg', 1),
+
+-- Laptop (category_id = 2)
+('MacBook Air M2', 'Laptop Apple chip M2 siêu mỏng nhẹ', 28990000, 'uploads/2.jpg', 2),
+('Dell XPS 13', 'Laptop cao cấp Dell XPS', 27990000, 'uploads/1.jpg', 2),
+('Asus ROG Strix G15', 'Laptop gaming Asus ROG', 25990000, 'uploads/2.jpg', 2),
+
+-- Máy tính bảng (category_id = 3)
+('iPad Gen 10', 'Máy tính bảng Apple iPad thế hệ 10', 12990000, 'uploads/1.jpg', 3),
+('Samsung Galaxy Tab S9', 'Tablet Samsung màn hình AMOLED', 18990000, 'uploads/2.jpg', 3),
+
+-- Phụ kiện (category_id = 4)
+('Sạc nhanh 20W', 'Củ sạc nhanh cho điện thoại', 350000, 'uploads/1.jpg', 4),
+('Cáp USB-C', 'Cáp sạc USB-C dài 1m', 150000, 'uploads/2.jpg', 4),
+
+-- Thiết bị âm thanh (category_id = 5)
+('AirPods Pro 2', 'Tai nghe không dây chống ồn', 5990000, 'uploads/1.jpg', 5),
+('Loa JBL Flip 6', 'Loa Bluetooth chống nước', 2990000, 'uploads/2.jpg', 5),
+('Micro HyperX SoloCast', 'Micro thu âm cho streamer', 1490000, 'uploads/1.jpg', 5);
+
+
+CREATE TABLE orders (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+phone VARCHAR(20) NOT NULL,
+address TEXT NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_details (
+id INT AUTO_INCREMENT PRIMARY KEY,
+order_id INT NOT NULL,
+product_id INT NOT NULL,
+quantity INT NOT NULL,
+price DECIMAL(10, 2) NOT NULL,
+FOREIGN KEY (order_id) REFERENCES orders(id)
+);
+
+CREATE TABLE account (
+id INT AUTO_INCREMENT PRIMARY KEY,
+username VARCHAR(255) NOT NULL UNIQUE,
+fullname VARCHAR(255) NOT NULL,
+password VARCHAR(255) NOT NULL,
+role ENUM('admin', 'user') DEFAULT 'user'
